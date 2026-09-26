@@ -1,4 +1,12 @@
 {
+  "redirects": [
+    {
+      "source": "/((?!api/).*)",
+      "has": [{ "type": "host", "value": "onkopsy-site.vercel.app" }],
+      "destination": "https://onko.assurgina.ru/$1",
+      "permanent": false
+    }
+  ],
   "headers": [
     { "source": "/api/(.*)", "headers": [ { "key": "Cache-Control", "value": "no-store" } ] }
   ]
