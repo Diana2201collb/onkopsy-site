@@ -481,6 +481,10 @@ html:not(.js-anim) .path li .ln{transform:none}
 .shake{animation:shake .4s var(--ease)}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .card-form .btn[disabled]{opacity:.8;cursor:progress}
+.price .old{text-decoration:line-through}
+.price ul b{color:var(--ink);font-weight:600}
+.price .dl{color:var(--bordo);font-weight:600}
+.foot-note.deadline{margin-top:18px;display:inline-block;padding:10px 14px;border-radius:10px;background:rgba(var(--bordo-rgb),.08);color:var(--bordo);font-size:14.5px;font-weight:600}
 </style>
 </head>
 <body>
@@ -739,8 +743,8 @@ html:not(.js-anim) .path li .ln{transform:none}
             <dt>Документ</dt><dd>Диплом, квалификация «Психолог-консультант»</dd>
           </dl>
           <div class="price">
-            <span class="now">220 000 ₽</span><span class="old">250 000 ₽</span>
-            <ul><li>Для участников клуба METANOIA — 210 000 ₽</li><li>Рассрочка от 21 000 ₽ в месяц*</li></ul>
+            <span class="now">139 000 ₽</span><span class="old">159 000 ₽</span>
+            <ul><li>Для участников клуба METANOIA — <b>125 000 ₽</b>, экономия 34 000 ₽</li><li class="dl">Скидка 10% при полной оплате до 28.09, 23:59</li><li>Банковская рассрочка — условия уточнит куратор</li></ul>
           </div>
           <button class="btn" type="button" data-apply="360">Получить консультацию</button>
         </article>
@@ -754,8 +758,8 @@ html:not(.js-anim) .path li .ln{transform:none}
             <dt>Документ</dt><dd>Удостоверение о повышении квалификации</dd>
           </dl>
           <div class="price">
-            <span class="now">90 000 ₽</span><span class="old">100 000 ₽</span>
-            <ul><li>Для участников клуба METANOIA — 80 000 ₽</li><li>Рассрочка от 13 400 ₽ в месяц*</li></ul>
+            <span class="now">69 000 ₽</span><span class="old">79 000 ₽</span>
+            <ul><li>Для участников клуба METANOIA — <b>62 000 ₽</b>, экономия 17 000 ₽</li><li class="dl">Скидка 10% при полной оплате до 28.09, 23:59</li><li>Банковская рассрочка — условия уточнит куратор</li></ul>
           </div>
           <button class="ghost" type="button" data-apply="72">Узнать о курсе 72 часа</button>
         </article>
@@ -774,8 +778,8 @@ html:not(.js-anim) .path li .ln{transform:none}
             <dt>Старт</dt><dd>на 13 недель раньше профильного потока</dd>
           </dl>
           <div class="price">
-            <span class="now">290 000 ₽</span><span class="old">310 000 ₽</span>
-            <ul><li>Для участников клуба METANOIA — 280 000 ₽</li><li>Рассрочка от 23 400 ₽ в месяц*</li></ul>
+            <span class="now">210 000 ₽</span><span class="old">240 000 ₽</span>
+            <ul><li>Для участников клуба METANOIA — <b>190 000 ₽</b>, экономия 50 000 ₽</li><li class="dl">Скидка 10% при полной оплате до 28.09, 23:59</li><li>Банковская рассрочка — условия уточнит куратор</li></ul>
           </div>
           <button class="btn" type="button" data-apply="520">Получить консультацию</button>
         </article>
@@ -790,7 +794,7 @@ html:not(.js-anim) .path li .ln{transform:none}
           <button class="btn" type="button" data-apply="metanoia">Получить консультацию</button>
         </article>
       </div>
-      <p class="foot-note" id="priceNote" hidden>* Сроки и условия рассрочки уточнит куратор.</p>
+      <p class="foot-note deadline" id="priceNote" hidden>Цены действуют до 28 сентября, 23:59</p>
     </div>
   </div>
 </section>
