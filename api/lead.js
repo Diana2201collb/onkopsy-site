@@ -5,6 +5,7 @@
 const EDU = { psy: 'высшее психологическое', other: 'высшее непсихологическое', none: 'высшего пока нет' };
 const ROUTE = { '72': 'КПК 72 часа', '360': 'ДПП 360 часов', '520': 'ДПП 520 часов', metanoia: 'клуб METANOIA' };
 const UTM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+const TRACKING = UTM.concat(['yclid', 'gclid', 'fbclid', 'from', 'roistat', 'openstat_service', 'openstat_campaign', 'openstat_ad', 'openstat_source']);
 
 const clean = (v, max = 300) => String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, max);
 
@@ -88,7 +89,14 @@ async function createLead(domain, token, d, extra) {
     MESSENGER: d.messenger,
     PRIVACYPOLICY: d.consent ? 'YES' : ''
   };
-  UTM.forEach(k => { if (extra[k]) map[k] = clean(extra[k], 200); });
+  // UTM-метки и другие метки рекламы — в системные поля amoCRM (UTM_SOURCE, UTM_MEDIUM, …, YCLID, GCLID, FBCLID).
+  // Берутся из формы, а если их там нет — из полной ссылки, с которой пришла заявка.
+  let params = null;
+  try { params = sourceUrl ? new URL(sourceUrl).searchParams : null; } catch (e) { params = null; }
+  TRACKING.forEach(k => {
+    const v = extra[k] || (params && params.get(k));
+    if (v) map[k] = clean(v, 250);
+  });
 
   let cf = { values: [], used: [], missing: [] };
   try { cf = buildFieldValues(await leadFields(domain, token), map); }
@@ -173,7 +181,7 @@ module.exports = async (req, res) => {
         const r = await createLead(domain, token, {
           test: true, name: 'Тест сайта', phone: '+7 900 000-00-00', email: 'test@assurgina.ru',
           education: 'psy', route: '360', messenger: 'Telegram', consent: true
-        }, { landing: 'https://onko.assurgina.ru/?utm_source=test&utm_medium=check&utm_campaign=crm_fields', utm_source: 'test', utm_medium: 'check', utm_campaign: 'crm_fields' });
+        }, { landing: 'https://onko.assurgina.ru/?utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign&utm_content=test_content&utm_term=test_term&yclid=test_yclid' });
         return res.status(r.ok ? 200 : 502).json(Object.assign({
           pipeline_id: process.env.AMO_PIPELINE_ID || null, status_id: process.env.AMO_STATUS_ID || null
         }, r));

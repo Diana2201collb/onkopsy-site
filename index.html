@@ -1064,6 +1064,7 @@ html:not(.js-anim) .path li .ln{transform:none}
   (function(){
     var q = new URLSearchParams(location.search);
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function(k){ if(q.get(k)) store(k, q.get(k)); });
+    if(q.get('utm_source') || q.get('yclid') || q.get('gclid') || q.get('fbclid')) store('landing', location.href);
     if(!store('referrer')) store('referrer', document.referrer || '');
     if(!store('landing')) store('landing', location.href);
   })();
