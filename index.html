@@ -1160,6 +1160,9 @@ html:not(.js-anim) .path li .ln{transform:none}
     fe.hidden = true;
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'referrer', 'landing'].forEach(function(k){ form[k].value = store(k) || ''; });
     var data = {}; new FormData(form).forEach(function(v, k){ data[k] = v; });
+    if(!data.landing) data.landing = location.href;
+    data.page = location.href;
+    data.consent = fAgree.checked ? 'YES' : '';
     function done(){
       track('lead_submit', { route: data.route, education: data.education, messenger: data.messenger });
       form.hidden = true;
