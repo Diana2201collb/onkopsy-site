@@ -470,6 +470,17 @@ html:not(.js-anim) .path li .ln{transform:none}
 .issuer{margin-top:22px;display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:var(--cream);font-size:14.5px;color:var(--ink-soft);line-height:1.45}
 .issuer::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--green)}
 .issuer a{color:var(--ink);font-weight:500;white-space:nowrap}
+
+/* ---------- form errors ---------- */
+.req{color:var(--bordo);font-weight:600}
+.consent.bad{color:var(--bordo);background:rgba(var(--bordo-rgb),.07);border-radius:10px;padding:10px 12px;margin:0 -12px;box-shadow:inset 0 0 0 1.5px var(--bordo)}
+.f.bad input,.f.bad select{border-color:var(--bordo);box-shadow:inset 0 0 0 1px var(--bordo);background:rgba(var(--bordo-rgb),.04)}
+.f .err:not(:empty){font-weight:500}
+.form-err{margin-top:18px;padding:12px 14px;border-radius:12px;background:rgba(var(--bordo-rgb),.08);color:var(--bordo);font-size:14.5px;line-height:1.45;font-weight:500}
+.form-err[hidden]{display:none}
+.shake{animation:shake .4s var(--ease)}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.card-form .btn[disabled]{opacity:.8;cursor:progress}
 </style>
 </head>
 <body>
@@ -776,7 +787,7 @@ html:not(.js-anim) .path li .ln{transform:none}
           <span class="tag">Зачисление недоступно</span>
           <h3>Для поступления на эти программы требуется высшее образование</h3>
           <p class="who">Мы не можем предложить вам зачисление, но приглашаем в образовательное пространство проекта — клуб METANOIA или закрытую библиотеку. Там можно познакомиться с подходом и материалами без получения документа ДПО.</p>
-          <button class="ghost" type="button" data-apply="metanoia">Узнать о клубе METANOIA</button>
+          <button class="btn" type="button" data-apply="metanoia">Получить консультацию</button>
         </article>
       </div>
       <p class="foot-note" id="priceNote" hidden>* Сроки и условия рассрочки уточнит куратор.</p>
@@ -834,12 +845,12 @@ html:not(.js-anim) .path li .ln{transform:none}
       <form id="leadForm" novalidate>
         <h3>Подберите маршрут вместе с куратором</h3>
         <div class="fields">
-          <div class="f"><label for="fName">Имя</label><input id="fName" name="name" autocomplete="name"><span class="err" aria-live="polite"></span></div>
-          <div class="f"><label for="fPhone">Телефон</label><input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"><span class="err" aria-live="polite"></span></div>
-          <div class="f"><label for="fEmail">Email</label><input id="fEmail" name="email" type="email" autocomplete="email"><span class="err" aria-live="polite"></span></div>
+          <div class="f"><label for="fName">Имя <b class="req" aria-hidden="true">*</b></label><input id="fName" name="name" autocomplete="name"><span class="err" aria-live="polite"></span></div>
+          <div class="f"><label for="fPhone">Телефон <b class="req" aria-hidden="true">*</b></label><input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"><span class="err" aria-live="polite"></span></div>
+          <div class="f"><label for="fEmail">Email <b class="req" aria-hidden="true">*</b></label><input id="fEmail" name="email" type="email" autocomplete="email"><span class="err" aria-live="polite"></span></div>
           <div class="f"><label for="fMsg">Удобный способ связи</label>
             <select id="fMsg" name="messenger"><option>Telegram</option><option>MAX</option><option>ВКонтакте</option><option>Звонок</option><option>Email</option></select></div>
-          <div class="f wide"><label for="fEdu">Высшее образование</label>
+          <div class="f wide"><label for="fEdu">Высшее образование <b class="req" aria-hidden="true">*</b></label>
             <select id="fEdu" name="education">
               <option value="">Выберите вариант</option>
               <option value="psy">Психологическое</option>
@@ -848,9 +859,10 @@ html:not(.js-anim) .path li .ln{transform:none}
             </select><span class="err" aria-live="polite"></span></div>
           <div class="f wide"><label for="fJob">Профессия и опыт <em>— необязательно</em></label><input id="fJob" name="profession" placeholder="Например: психолог, 4 года частной практики"></div>
           <div class="f wide"><label for="fGoal">Цель обучения <em>— необязательно</em></label><textarea id="fGoal" name="goal"></textarea></div>
-          <label class="consent" id="consentWrap"><input type="checkbox" id="fAgree" name="consent"><span>Согласен(на) на обработку персональных данных и получение ответа по заявке</span></label>
+          <label class="consent" id="consentWrap"><input type="checkbox" id="fAgree" name="consent" aria-describedby="consentErr"><span><b class="req" aria-hidden="true">*</b> Согласен(на) на обработку персональных данных и получение ответа по заявке</span></label>
         </div>
         <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><input type="hidden" name="route"><input type="hidden" name="utm_source"><input type="hidden" name="utm_medium"><input type="hidden" name="utm_campaign"><input type="hidden" name="utm_content"><input type="hidden" name="utm_term"><input type="hidden" name="referrer"><input type="hidden" name="landing">
+        <p class="form-err" id="formErr" role="alert" hidden></p>
         <button class="btn" type="submit">Получить консультацию</button>
         <span class="small">Заявка не является зачислением. Мы используем данные только для ответа.</span>
       </form>
@@ -919,7 +931,7 @@ html:not(.js-anim) .path li .ln{transform:none}
 
   /* Заявки уходят в amoCRM через серверную функцию /api/lead (ключ amoCRM хранится только на сервере).
      Если функция недоступна (например, в предпросмотре), заявка передаётся в Отдел заботы через мессенджер. */
-  var FORM_ENDPOINT = 'https://onkopsy-leads.vercel.app/api/lead';
+  var FORM_ENDPOINT = /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent/.test(location.hostname) ? '/api/lead' : '';
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function store(k, v){ try{ if(v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); }catch(e){ return null; } }
@@ -1117,6 +1129,10 @@ html:not(.js-anim) .path li .ln{transform:none}
     if(msg) track('lead_error', { field: el.name });
   }
   form.addEventListener('input', function(e){ if(e.target.closest('.f.bad')) mark(e.target, ''); });
+  form.addEventListener('change', function(e){
+    if(e.target === fAgree && fAgree.checked) document.getElementById('consentWrap').classList.remove('bad');
+    if(e.target.closest('.f.bad') && e.target.value) mark(e.target, '');
+  });
   form.addEventListener('submit', function(e){
     e.preventDefault();
     var ok = true, first = null;
@@ -1126,9 +1142,22 @@ html:not(.js-anim) .path li .ln{transform:none}
     check(fPhone, digits.length < 10 || digits.length > 15 ? 'Введите номер с кодом страны, например +7 900 000-00-00.' : '');
     check(fEmail, !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(fEmail.value.trim()) ? 'Проверьте адрес: в нём должны быть @ и домен.' : '');
     check(fEdu, !fEdu.value ? 'Выберите образование — от него зависит маршрут.' : '');
-    document.getElementById('consentWrap').classList.toggle('bad', !fAgree.checked);
+    var cw = document.getElementById('consentWrap');
+    cw.classList.toggle('bad', !fAgree.checked);
     if(!fAgree.checked){ ok = false; first = first || fAgree; }
-    if(!ok){ first.focus(); return; }
+    var fe = document.getElementById('formErr');
+    if(!ok){
+      var missing = [];
+      [[fName,'имя'],[fPhone,'телефон'],[fEmail,'email'],[fEdu,'образование']].forEach(function(x){ if(x[0].closest('.f').classList.contains('bad')) missing.push(x[1]); });
+      if(!fAgree.checked) missing.push('согласие на обработку данных');
+      fe.textContent = 'Чтобы отправить заявку, заполните: ' + missing.join(', ') + '.';
+      fe.hidden = false;
+      fe.classList.remove('shake'); void fe.offsetWidth; fe.classList.add('shake');
+      first.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block:'center' });
+      setTimeout(function(){ first.focus({ preventScroll:true }); }, reduce ? 0 : 350);
+      return;
+    }
+    fe.hidden = true;
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'referrer', 'landing'].forEach(function(k){ form[k].value = store(k) || ''; });
     var data = {}; new FormData(form).forEach(function(v, k){ data[k] = v; });
     function done(){
@@ -1141,10 +1170,12 @@ html:not(.js-anim) .path li .ln{transform:none}
     }
     if(FORM_ENDPOINT){
       var btn = form.querySelector('button[type=submit]'); btn.disabled = true; btn.textContent = 'Отправляем…';
-      fetch(FORM_ENDPOINT, { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(data) })
-        .then(function(r){ btn.disabled = false; btn.textContent = 'Получить консультацию'; return r; })
+      var ctrl = window.AbortController ? new AbortController() : null;
+      var tmr = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 12000);
+      fetch(FORM_ENDPOINT, { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify(data), signal: ctrl ? ctrl.signal : undefined })
+        .then(function(r){ clearTimeout(tmr); btn.disabled = false; btn.textContent = 'Получить консультацию'; return r; })
         .then(function(r){ if(!r.ok) throw new Error(r.status); done(); })
-        .catch(function(){ handoff(data); });
+        .catch(function(){ clearTimeout(tmr); btn.disabled = false; btn.textContent = 'Получить консультацию'; handoff(data); });
     } else { handoff(data); }
   });
 
