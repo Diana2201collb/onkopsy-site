@@ -168,10 +168,35 @@ module.exports = async (req, res) => {
   // Служебная проверка (ключ CHECK_KEY):
   //   ?check=KEY           — связь с amoCRM (только чтение)
   //   ?check=KEY&fields=1  — список полей сделки (только чтение)
+//   ?check=KEY&stats=1   — заявки с сайта для аналитики (только чтение)
   //   ?check=KEY&test=1    — создаёт одну тестовую сделку «ТЕСТ — …»
   if (req.method === 'GET' && process.env.CHECK_KEY && q.check === process.env.CHECK_KEY) {
     if (!token) return res.status(503).json({ ok: false, error: 'not_configured' });
     try {
+      if (q.stats === '1') {
+        // Заявки с сайта: сделки «Онкопсихология — заявка с сайта…» (без тестовых).
+        const h = { Authorization: `Bearer ${token}` };
+        const st = await fetch(`https://${domain}/api/v4/leads/pipelines`, { headers: h }).then(r => r.ok ? r.json() : null).catch(() => null);
+        const stName = {};
+        (st && st._embedded ? st._embedded.pipelines : []).forEach(p => (p._embedded.statuses || []).forEach(x => { stName[x.id] = p.name + ' / ' + x.name; }));
+        const leads = [];
+        for (let page = 1; page <= 20; page++) {
+          const r = await fetch(`https://${domain}/api/v4/leads?limit=250&page=${page}&query=${encodeURIComponent('заявка с сайта')}`, { headers: h });
+          if (r.status === 204 || !r.ok) break;
+          const j = await r.json();
+          const list = (j._embedded && j._embedded.leads) || [];
+          leads.push(...list);
+          if (!j._links || !j._links.next) break;
+        }
+        const cfv = (l, code) => { const f = (l.custom_fields_values || []).find(x => (x.field_code || '') === code); return f && f.values[0] ? String(f.values[0].value) : ''; };
+        const rows = leads.filter(l => /^Онкопсихология — заявка с сайта/.test(l.name || '')).map(l => ({
+          id: l.id, name: l.name, created: new Date(l.created_at * 1000).toISOString(), status: stName[l.status_id] || String(l.status_id),
+          closed: l.closed_at ? new Date(l.closed_at * 1000).toISOString() : null, price: l.price || 0,
+          utm_source: cfv(l, 'UTM_SOURCE'), utm_medium: cfv(l, 'UTM_MEDIUM'), utm_campaign: cfv(l, 'UTM_CAMPAIGN'),
+          utm_content: cfv(l, 'UTM_CONTENT'), utm_term: cfv(l, 'UTM_TERM'), referrer: cfv(l, 'REFERRER'), messenger: cfv(l, 'MESSENGER')
+        }));
+        return res.status(200).json({ ok: true, total: rows.length, leads: rows });
+      }
       if (q.fields === '1') {
         fieldCache = null;
         const fs = await leadFields(domain, token);
